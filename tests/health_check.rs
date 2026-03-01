@@ -1,11 +1,7 @@
-use actix_web::{App, HttpResponse, HttpServer, Responder, web};
-// use zero2prod::health_check;
-
-
-#[actix_web::test]    // test attribute macro
+#[tokio::test]    // test attribute macro
 async fn health_check_works() {
   // Arrange
-  spawn_app().await.expect("Failed to spawn our app!");
+  spawn_app();
 
   let client = reqwest::Client::new();
 
@@ -23,12 +19,8 @@ async fn health_check_works() {
 }
 
 
-async fn spawn_app() -> std::io::Result<()> {
-  // let server = HttpServer::new(|| {
-  //   App::new()
-  //       .route("/health_check", web::get().to(health_check))
-  // })
-  // .bind("127.0.0.1:8000") ?
-  // .run
-  todo!()
+fn spawn_app() {
+  let server = zero2prod::run("127.0.0.1:8000").expect("Failed to bind address");
+
+  let _ = tokio::spawn(server);
 }
